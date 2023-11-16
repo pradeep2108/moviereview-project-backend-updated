@@ -23,7 +23,7 @@ public class Users {
     @Column(unique = true)
     private  String userName;
     @Column(unique = true, nullable = false)
-    private String emailId;
+    private String email;
     @Column(nullable = false)
     private String password;
     @Enumerated(EnumType.STRING)

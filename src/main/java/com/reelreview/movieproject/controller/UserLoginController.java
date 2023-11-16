@@ -25,6 +25,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.Collection;
 import java.util.Optional;
 
+@CrossOrigin("http://localhost:3000")
 @RestController
 @RequestMapping("/api/reelreview")
 public class UserLoginController {
@@ -47,7 +48,7 @@ public class UserLoginController {
 
     @PostMapping("/public/registeruser")
     public ResponseEntity<?> registerUsers(@RequestBody Users user){
-        if(userDao.findByEmailId(user.getEmailId()).isEmpty()){
+        if(userDao.findByEmail(user.getEmail()).isEmpty()){
             String password = user.getPassword();
             String hashPassword = passwordEncoder.encode(password);
             user.setPassword(hashPassword);
@@ -78,10 +79,10 @@ public class UserLoginController {
     public ResponseEntity<?> login(@RequestBody LoginCredentials lc, HttpServletRequest httpServletRequest,
                                    HttpServletResponse httpServletResponse)throws InvalidKeySpecException, NoSuchAlgorithmException {
         Authentication authentication =  authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(lc.getEmailId(),lc.getPassword()));
+                new UsernamePasswordAuthenticationToken(lc.getEmail(),lc.getPassword()));
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwtToken = jwtTokenHelper.generateToken(lc.getEmailId(),authorities);
+        String jwtToken = jwtTokenHelper.generateToken(lc.getEmail(),authorities);
         return  ResponseEntity.ok(jwtToken);
 
     }
@@ -97,6 +98,6 @@ public class UserLoginController {
 
     @GetMapping("/public/{emailId}")
     public Optional<Users> findUserByEmailId(@PathVariable String emailId){
-        return userDao.findByEmailId(emailId);
+        return userDao.findByEmail(emailId);
     }
 }

@@ -26,14 +26,14 @@ public class  UserDataService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Optional<Users> userOptional = userDao.findByEmailId(email);
+        Optional<Users> userOptional = userDao.findByEmail(email);
         if(!userOptional.isPresent()){
             throw new  UsernameNotFoundException("User details not found");
         }else {
             Users user = userOptional.get();
             List<GrantedAuthority> authorities = new LinkedList();
             authorities.add(new SimpleGrantedAuthority(user.getRole().name()));
-            return new User(user.getEmailId(), user.getPassword(), authorities);
+            return new User(user.getEmail(), user.getPassword(), authorities);
         }
     }
 
@@ -43,7 +43,7 @@ public class  UserDataService implements UserDetailsService {
     }
 
 
-    public Optional<Users> findByEmailId(String email){
-        return  userDao.findByEmailId(email);
+    public Optional<Users> findByEmail(String email){
+        return  userDao.findByEmail(email);
     }
 }
